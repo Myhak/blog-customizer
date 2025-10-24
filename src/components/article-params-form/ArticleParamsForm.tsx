@@ -83,53 +83,57 @@ export const ArticleParamsForm = ({
 					<form className={styles.form} onSubmit={handleSubmit}>
 						<h2 className={styles.title}>ЗАДАЙТЕ ПАРАМЕТРЫ</h2>
 
-						<div className={styles.section}>
-							<label className={styles.label}>ШРИФТ</label>
-							<Select
-								selected={formState.fontFamilyOption}
-								options={fontFamilyOptions}
-								onChange={handleFontFamilyChange}
-							/>
-						</div>
+						<div className={styles.contentWrapper}>
+							<div className={styles.section}>
+								<label className={styles.label}>ШРИФТ</label>
+								<Select
+									selected={formState.fontFamilyOption}
+									options={fontFamilyOptions}
+									onChange={handleFontFamilyChange}
+								/>
+							</div>
 
-						<div className={styles.section}>
-							<label className={styles.label}>РАЗМЕР ШРИФТА</label>
-							<RadioGroup
-								name='fontSize'
-								options={fontSizeOptions}
-								selected={formState.fontSizeOption}
-								onChange={handleFontSizeChange}
-								title={''}
-							/>
-						</div>
+							<div className={styles.section}>
+								<label className={styles.label}>РАЗМЕР ШРИФТА</label>
+								<RadioGroup
+									title=''
+									name='fontSize'
+									options={fontSizeOptions}
+									selected={formState.fontSizeOption}
+									onChange={handleFontSizeChange}
+								/>
+							</div>
 
-						<div className={styles.section}>
-							<label className={styles.label}>ЦВЕТ ШРИФТА</label>
-							<Select
-								selected={formState.fontColor}
-								options={fontColors}
-								onChange={handleFontColorChange}
-							/>
-						</div>
+							<div className={styles.section}>
+								<label className={styles.label}>ЦВЕТ ШРИФТА</label>
+								<Select
+									selected={formState.fontColor}
+									options={fontColors}
+									onChange={handleFontColorChange}
+								/>
+							</div>
 
-						<div className={styles.section}>
-							<label className={styles.label}>ЦВЕТ ФОНА</label>
-							<Select
-								selected={formState.backgroundColor}
-								options={backgroundColors}
-								onChange={handleBgColorChange}
-							/>
-						</div>
+							{/* Серая полоса между "Цвет шрифта" и "Цвет фона" */}
+							<hr className={styles.divider} />
 
-						<div className={styles.section}>
-							<label className={styles.label}>ШИРИНА КОНТЕНТА</label>
-							<Select
-								selected={formState.contentWidth}
-								options={contentWidthArr}
-								onChange={handleContentWidthChange}
-							/>
-						</div>
+							<div className={styles.section}>
+								<label className={styles.label}>ЦВЕТ ФОНА</label>
+								<Select
+									selected={formState.backgroundColor}
+									options={backgroundColors}
+									onChange={handleBgColorChange}
+								/>
+							</div>
 
+							<div className={styles.section}>
+								<label className={styles.label}>ШИРИНА КОНТЕНТА</label>
+								<Select
+									selected={formState.contentWidth}
+									options={contentWidthArr}
+									onChange={handleContentWidthChange}
+								/>
+							</div>
+						</div>
 						<div className={styles.bottomContainer}>
 							<Button title='СБРОСИТЬ' type='clear' onClick={handleReset} />
 							<Button title='ПРИМЕНИТЬ' type='apply' htmlType='submit' />
