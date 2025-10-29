@@ -2,7 +2,8 @@
 
 .container {
 	position: fixed;
-	z-index: 1000;
+	left: 0;
+	z-index: 1;
 	box-sizing: border-box;
 	width: 615px;
 	height: 100vh;
@@ -10,7 +11,7 @@
 	overflow-y: auto;
 	font-family: 'Open Sans', sans-serif;
 	background: #ffffff;
-	transform: translateX(100%);
+	transform: translateX(-100%);
 	transition: transform 0.3s ease-in-out;
 
 	&.open {

@@ -1,9 +1,10 @@
 // src/components/article-params-form/ArticleParamsForm.tsx
-import { useState, useRef, useEffect, ReactNode } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
 import { Select } from 'src/ui/select';
 import { RadioGroup } from 'src/ui/radio-group';
+import { Text } from 'src/ui/text';
 import { useOutsideClick } from 'src/ui/radio-group/hooks/useOutsideClick';
 
 import {
@@ -17,46 +18,41 @@ import {
 } from 'src/constants/articleProps';
 
 import styles from './ArticleParamsForm.module.scss';
-import clsx from 'clsx';
 
 interface ArticleParamsFormProps {
-	children: (appliedState: ArticleStateType) => ReactNode;
+	appliedState: ArticleStateType;
+	onApply: (state: ArticleStateType) => void;
 }
 
-export const ArticleParamsForm = ({ children }: ArticleParamsFormProps) => {
+export const ArticleParamsForm = ({
+	appliedState,
+	onApply,
+}: ArticleParamsFormProps) => {
 	const [isOpen, setIsOpen] = useState(false);
-	const [appliedState, setAppliedState] =
-		useState<ArticleStateType>(defaultArticleState);
-	const [formState, setFormState] =
-		useState<ArticleStateType>(defaultArticleState);
+	const [formState, setFormState] = useState<ArticleStateType>(appliedState);
 
 	const sidebarRef = useRef<HTMLDivElement>(null);
 	useOutsideClick(sidebarRef, () => setIsOpen(false));
 
-	// При открытии — сбрасываем форму на последнее применённое состояние
+	// При открытии — синхронизируем форму с текущим appliedState
 	useEffect(() => {
 		if (isOpen) {
 			setFormState(appliedState);
 		}
 	}, [isOpen, appliedState]);
 
-	const handleApply = () => {
-		setAppliedState(formState);
+	const handleSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		onApply(formState);
 		setIsOpen(false);
 	};
 
 	const handleReset = () => {
-		setFormState(appliedState); // сброс на последнее применённое
-		setAppliedState(appliedState); // сразу применяем
-		// isOpen остаётся открытым — по ТЗ сброс не закрывает панель
+		// СБРОС НА ИСХОДНОЕ СОСТОЯНИЕ СТРАНИЦЫ
+		setFormState(defaultArticleState);
+		onApply(defaultArticleState);
 	};
 
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		handleApply();
-	};
-
-	// Обработчики изменений
 	const handleFontFamilyChange = (option: (typeof fontFamilyOptions)[number]) =>
 		setFormState((prev) => ({ ...prev, fontFamilyOption: option }));
 
@@ -75,61 +71,62 @@ export const ArticleParamsForm = ({ children }: ArticleParamsFormProps) => {
 	return (
 		<>
 			<ArrowButton isOpen={isOpen} onClick={() => setIsOpen(!isOpen)} />
-			{isOpen && (
-				<aside ref={sidebarRef} className={clsx(styles.container, styles.open)}>
-					<form className={styles.form} onSubmit={handleSubmit}>
-						<h2 className={styles.title}>ЗАДАЙТЕ ПАРАМЕТРЫ</h2>
+			<aside
+				ref={sidebarRef}
+				className={`${styles.container} ${isOpen ? styles.open : ''}`}>
+				<form className={styles.form} onSubmit={handleSubmit}>
+					<div className={styles.title}>
+						<Text as='h2' size={31} weight={800} uppercase>
+							ЗАДАЙТЕ ПАРАМЕТРЫ
+						</Text>
+					</div>
 
-						<div className={styles.contentWrapper}>
-							<Select
-								title='ШРИФТ'
-								selected={formState.fontFamilyOption}
-								options={fontFamilyOptions}
-								onChange={handleFontFamilyChange}
-							/>
+					<div className={styles.contentWrapper}>
+						<Select
+							title='ШРИФТ'
+							selected={formState.fontFamilyOption}
+							options={fontFamilyOptions}
+							onChange={handleFontFamilyChange}
+						/>
 
-							<RadioGroup
-								title='РАЗМЕР ШРИФТА'
-								name='fontSize'
-								options={fontSizeOptions}
-								selected={formState.fontSizeOption}
-								onChange={handleFontSizeChange}
-							/>
+						<RadioGroup
+							title='РАЗМЕР ШРИФТА'
+							name='fontSize'
+							options={fontSizeOptions}
+							selected={formState.fontSizeOption}
+							onChange={handleFontSizeChange}
+						/>
 
-							<Select
-								title='ЦВЕТ ШРИФТА'
-								selected={formState.fontColor}
-								options={fontColors}
-								onChange={handleFontColorChange}
-							/>
+						<Select
+							title='ЦВЕТ ШРИФТА'
+							selected={formState.fontColor}
+							options={fontColors}
+							onChange={handleFontColorChange}
+						/>
 
-							<hr className={styles.divider} />
+						<hr className={styles.divider} />
 
-							<Select
-								title='ЦВЕТ ФОНА'
-								selected={formState.backgroundColor}
-								options={backgroundColors}
-								onChange={handleBgColorChange}
-							/>
+						<Select
+							title='ЦВЕТ ФОНА'
+							selected={formState.backgroundColor}
+							options={backgroundColors}
+							onChange={handleBgColorChange}
+						/>
 
-							<Select
-								title='ШИРИНА КОНТЕНТА'
-								selected={formState.contentWidth}
-								options={contentWidthArr}
-								onChange={handleContentWidthChange}
-							/>
-						</div>
+						<Select
+							title='ШИРИНА КОНТЕНТА'
+							selected={formState.contentWidth}
+							options={contentWidthArr}
+							onChange={handleContentWidthChange}
+						/>
+					</div>
 
-						<div className={styles.bottomContainer}>
-							<Button title='СБРОСИТЬ' type='clear' onClick={handleReset} />
-							<Button title='ПРИМЕНИТЬ' type='apply' htmlType='submit' />
-						</div>
-					</form>
-				</aside>
-			)}
-
-			{/* Рендерим детей с актуальным appliedState */}
-			{children(appliedState)}
+					<div className={styles.bottomContainer}>
+						<Button title='СБРОСИТЬ' type='clear' onClick={handleReset} />
+						<Button title='ПРИМЕНИТЬ' type='apply' htmlType='submit' />
+					</div>
+				</form>
+			</aside>
 		</>
 	);
 };
