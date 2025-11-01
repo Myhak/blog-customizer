@@ -1,5 +1,6 @@
 // src/components/article-params-form/ArticleParamsForm.tsx
 import { useState, useRef, useEffect } from 'react';
+import clsx from 'clsx';
 import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
 import { Select } from 'src/ui/select';
@@ -73,7 +74,7 @@ export const ArticleParamsForm = ({
 			<ArrowButton isOpen={isOpen} onClick={() => setIsOpen(!isOpen)} />
 			<aside
 				ref={sidebarRef}
-				className={`${styles.container} ${isOpen ? styles.open : ''}`}>
+				className={clsx(styles.container, isOpen && styles.open)}>
 				<form className={styles.form} onSubmit={handleSubmit}>
 					<div className={styles.title}>
 						<Text as='h2' size={31} weight={800} uppercase>
